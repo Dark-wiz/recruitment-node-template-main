@@ -12,14 +12,14 @@ export const disconnectAndClearDatabase = async (ds: DataSource): Promise<void> 
   await ds.destroy();
 };
 
-export const distanceCalculator = async (origin: string, destination: string):Promise<LocationResponse> => {
+export const distanceCalculator = async (origin: string, destination: string): Promise<LocationResponse> => {
   try {
     const url = `${config.MATRIX_API}?origins=${origin}&destinations=${destination}&key=${config.MATRIX_TOKEN}`;
     const response: DistanceMatrixDto = await (await axios.get(url)).data;
 
     const locationResponse = new LocationResponse();
-    locationResponse.distance = response.rows[0].elements[0].distance.value;
-    locationResponse.duration = response.rows[0].elements[0].duration.value;
+    locationResponse.distance = response.rows[0].elements[0].distance == null ? 0 : response.rows[0].elements[0].distance.value; // in meters
+    locationResponse.duration = response.rows[0].elements[0].duration == null ? 0 : response.rows[0].elements[0].duration.value; //in seconds
     return locationResponse;
   } catch (error) {
     throw new BadGatewayError(error);

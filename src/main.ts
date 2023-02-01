@@ -2,6 +2,7 @@ import config from "config/config";
 import { Response } from "express";
 import http from "http";
 import dataSource from "orm/orm.config";
+import { Seeder } from "seeder";
 import { setupServer } from "./server/server";
 
 async function bootstrap(): Promise<http.Server> {
@@ -16,6 +17,9 @@ async function bootstrap(): Promise<http.Server> {
 
   const server = http.createServer(app);
   server.listen(port);
+
+  const seed = new Seeder();
+  await seed.seedUser();
 
   return server;
 }

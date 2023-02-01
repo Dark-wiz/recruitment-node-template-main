@@ -29,8 +29,8 @@ export class FarmService {
 
     const locationResponse: LocationResponse = await distanceCalculator(user.address, address);
 
-    const distance_coordinate = locationResponse.distance == null ? 0 : locationResponse.distance; //in meters
-    const duration_coordinate = locationResponse.duration == null ? 0 : locationResponse.duration; //in seconds
+    const distance_coordinate = locationResponse.distance;
+    const duration_coordinate = locationResponse.duration; 
 
     const farmData: DeepPartial<Farm> = { user, name, address, size, farm_yield, distance_coordinate, duration_coordinate };
 
