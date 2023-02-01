@@ -19,5 +19,5 @@ export class CreateFarmDto {
 
   @IsNumber()
   @IsNotEmpty()
-  public farmYield: number;
+  public farm_yield: number;
 }

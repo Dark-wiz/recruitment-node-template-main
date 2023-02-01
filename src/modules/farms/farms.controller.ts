@@ -21,10 +21,47 @@ export class FarmController {
 
   public async getFarm(req: Request, res: Response, next: NextFunction) {
     try {
-        const farms = await this.farmService.getFarm(req.body as string);
-        res.status(201).send(farms);
+      const { userId, page, pageSize, sortByName, sortByDate, sortByDistance } = req.query;
+      const farms = await this.farmService.getFarm(
+        userId as string,
+        page as string,
+        pageSize as string,
+        sortByName as string,
+        sortByDate as string,
+        sortByDistance as string,
+      );
+      res.status(201).send(farms);
     } catch (error) {
-        next(error);
+      next(error);
+    }
+  }
+  
+  public async filterFarm(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId, page, pageSize,outliers, sortByName, sortByDate, sortByDistance } = req.query;
+      const farms = await this.farmService.filterFarm(
+        userId as string,
+        page as string,
+        pageSize as string,
+        outliers as string,
+        sortByName as string,
+        sortByDate as string,
+        sortByDistance as string,
+      );
+      res.status(201).send(farms);
+    } catch (error) {
+      next(error);
+    }
+  }
+  
+
+  public async deleteFarm(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId, farmId } = req.query;
+      await this.farmService.deleteFarm(userId as string, farmId as string);
+      res.status(201).send({ message: "Farm was deleted" });
+    } catch (error) {
+      next(error);
     }
   }
 }

@@ -33,7 +33,7 @@ export class AuthService {
         email: user.email,
       },
       config.JWT_SECRET,
-      { expiresIn: config.JWT_EXPIRES_AT },
+      { expiresIn: `${config.JWT_EXPIRES_AT}` },
     );
     const tokenExpireDate = this.getJwtTokenExpireDate(token);
 

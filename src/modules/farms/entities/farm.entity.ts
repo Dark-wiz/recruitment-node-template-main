@@ -25,7 +25,7 @@ export class Farm {
   public size: number;
 
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  public farmYield: number;
+  public farm_yield: number;
 
   @CreateDateColumn()
   public createdAt: Date;

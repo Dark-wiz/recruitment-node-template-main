@@ -14,7 +14,7 @@ export class FarmDto {
 
   @Transform(({ value }) => (value as Number).toString())
   @Expose()
-  public farmYield: Number;
+  public farm_yield: Number;
 
   @Transform(({ value }) => (value as Number).toString())
   @Expose()
