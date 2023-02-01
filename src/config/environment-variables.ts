@@ -41,7 +41,15 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   public JWT_SECRET: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  public JWT_EXPIRES_AT: number;
+  public JWT_EXPIRES_AT: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public MATRIX_TOKEN: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public MATRIX_API: string;
 }
