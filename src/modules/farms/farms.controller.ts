@@ -1,3 +1,4 @@
+import { HttpStatusCode } from "axios";
 import { NextFunction, Request, Response } from "express";
 import { CreateFarmDto } from "./dto/create-farm.dto";
 import { FarmDto } from "./dto/farm.dto";
@@ -13,7 +14,7 @@ export class FarmController {
   public async addFarm(req: Request, res: Response, next: NextFunction) {
     try {
       const farm = await this.farmService.createFarm(req.body as CreateFarmDto);
-      res.status(201).send(FarmDto.createFromEntity(farm));
+      res.status(HttpStatusCode.Created).send(FarmDto.createFromEntity(farm));
     } catch (error) {
       next(error);
     }
@@ -30,7 +31,7 @@ export class FarmController {
         sortByDate as string,
         sortByDistance as string,
       );
-      res.status(201).send(farms);
+      res.status(HttpStatusCode.Ok).send(farms);
     } catch (error) {
       next(error);
     }
@@ -48,7 +49,7 @@ export class FarmController {
         sortByDate as string,
         sortByDistance as string,
       );
-      res.status(201).send(farms);
+      res.status(HttpStatusCode.Ok).send(farms);
     } catch (error) {
       next(error);
     }
@@ -59,7 +60,7 @@ export class FarmController {
     try {
       const { userId, farmId } = req.query;
       await this.farmService.deleteFarm(userId as string, farmId as string);
-      res.status(201).send({ message: "Farm was deleted" });
+      res.status(HttpStatusCode.Ok).send({ message: "Farm was deleted" });
     } catch (error) {
       next(error);
     }

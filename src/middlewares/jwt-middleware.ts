@@ -4,7 +4,7 @@ import dataSource from "orm/orm.config";
 import { JwtPayload, verify } from "jsonwebtoken";
 import config from "config/config";
 import { NextFunction, Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { HttpStatusCode } from "axios";
 
 export class JwtMiddleware {
   private readonly accessTokenRepository: Repository<AccessToken>;
@@ -13,20 +13,21 @@ export class JwtMiddleware {
   }
 
   public async verifyToken(req: Request, res: Response, next: NextFunction) {
-    const token = req.body.token || req.query.token || req.headers["token"];
+    try {
+      const token = req.body.token || req.query.token || req.headers["token"];
     const tokenUserId = req.body.userId || req.query.userId || req.headers["userId"];
     const tokenUserEmail = req.body.userEmail || req.query.userEmail || req.headers["userEmail"];
     if (!token) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ name: "UnauthorizedError", message: "Please pass jwt" });
+      return res.status(HttpStatusCode.Unauthorized).send({ name: "UnauthorizedError", message: "Please pass jwt" });
     }
     const userId = this.getUserId(token);
     const userEmail = this.getUserEmail(token);
     if (!userId) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ name: "UnauthorizedError", message: "Please pass valid jwt" });
+      return res.status(HttpStatusCode.Unauthorized).send({ name: "UnauthorizedError", message: "Please pass valid jwt" });
     } else if (tokenUserId != null && tokenUserId != userId) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ name: "UnauthorizedError", message: "Please pass valid jwt" });
+      return res.status(HttpStatusCode.Unauthorized).send({ name: "UnauthorizedError", message: "Please pass valid jwt" });
     } else if (tokenUserEmail != null && tokenUserEmail != userEmail) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ name: "UnauthorizedError", message: "Please pass valid jwt" });
+      return res.status(HttpStatusCode.Unauthorized).send({ name: "UnauthorizedError", message: "Please pass valid jwt" });
     }
 
     const lastRecord = await this.accessTokenRepository
@@ -39,9 +40,12 @@ export class JwtMiddleware {
     const currentTime = new Date();
 
     if (!lastRecord || currentTime > lastRecord.expiresAt) {
-      return res.status(StatusCodes.UNAUTHORIZED).send({ name: "UnauthorizedError", message: "Invalid jwt, please re login" });
+      return res.status(HttpStatusCode.Unauthorized).send({ name: "UnauthorizedError", message: "Invalid jwt, please re login" });
     }
     next();
+    } catch (error) {
+      return res.status(HttpStatusCode.Unauthorized).send({ name: "UnauthorizedError", message: error });
+    }
   }
 
   public getUserId(token: string): string {

@@ -46,9 +46,9 @@ export class FarmService {
     userId: string,
     page: string,
     pageSize: string,
-    sortByName = "asc",
-    sortByDate = "asc",
-    sortByDistance = "asc",
+    sortByName: string,
+    sortByDate: string,
+    sortByDistance: string,
   ) {
     const result = await this.farmRepository
       .createQueryBuilder("farm")
@@ -69,9 +69,9 @@ export class FarmService {
     page: string,
     pageSize: string,
     outliers: string,
-    sortByName = "asc",
-    sortByDate = "asc",
-    sortByDistance = "asc",
+    sortByName: string,
+    sortByDate: string,
+    sortByDistance: string,
   ) {
     const outlierValue = Boolean(outliers);
     const result = await this.farmRepository

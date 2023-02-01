@@ -47,9 +47,9 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
-  public MATRIX_TOKEN: string;
+  public MATRIX_TOKEN: string="f8zszQvTRuUSd2b67zX4vT25c7XLG";
 
   @IsString()
   @IsNotEmpty()
-  public MATRIX_API: string;
+  public MATRIX_API: string="https://api.distancematrix.ai/maps/api/distancematrix/json";
 }

@@ -9,6 +9,7 @@ import { setupServer } from "server/server";
 import { disconnectAndClearDatabase } from "helpers/utils";
 import { LoginUserDto } from "../dto/login-user.dto";
 import { AccessToken } from "../entities/access-token.entity";
+import { HttpStatusCode } from "axios";
 
 describe("AuthController", () => {
   let app: Express;
@@ -40,21 +41,22 @@ describe("AuthController", () => {
   describe("POST /auth", () => {
     const createUser = async (userDto: CreateUserDto) => usersService.createUser(userDto);
     const loginDto: LoginUserDto = { email: "user@test.com", password: "password" };
+    const createUserDto: CreateUserDto = { email: "user@test.com", password: "password", address: "famagusta, cyprus" };
 
     it("should login existing user", async () => {
-      await createUser(loginDto);
+      await createUser(createUserDto);
 
-      const res = await agent.post("/api/auth/login").send(loginDto);
+      const res = await agent.post("/api/v1/auth/login").send(loginDto);
       const { token } = res.body as AccessToken;
 
-      expect(res.statusCode).toBe(201);
+      expect(res.statusCode).toBe(HttpStatusCode.Created);
       expect(token).toBeDefined();
     });
 
     it("should throw UnprocessableEntityError when user logs in with invalid email", async () => {
-      const res = await agent.post("/api/auth/login").send({ email: "invalidEmail", password: "pwd" });
+      const res = await agent.post("/api/v1/auth/login").send({ email: "invalidEmail", password: "pwd" });
 
-      expect(res.statusCode).toBe(422);
+      expect(res.statusCode).toBe(HttpStatusCode.UnprocessableEntity);
       expect(res.body).toMatchObject({
         name: "UnprocessableEntityError",
         message: "Invalid user email or password",
@@ -62,11 +64,11 @@ describe("AuthController", () => {
     });
 
     it("should throw UnprocessableEntityError when user logs in with invalid password", async () => {
-      await createUser(loginDto);
+      await createUser(createUserDto);
 
-      const res = await agent.post("/api/auth/login").send({ email: loginDto.email, password: "invalidPassword" });
+      const res = await agent.post("/api/v1/auth/login").send({ email: loginDto.email, password: "invalidPassword" });
 
-      expect(res.statusCode).toBe(422);
+      expect(res.statusCode).toBe(HttpStatusCode.UnprocessableEntity);
       expect(res.body).toMatchObject({
         name: "UnprocessableEntityError",
         message: "Invalid user email or password",

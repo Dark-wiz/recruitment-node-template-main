@@ -7,6 +7,7 @@ import ds from "orm/orm.config";
 import supertest, { SuperAgentTest } from "supertest";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { UsersService } from "../users.service";
+import { HttpStatusCode } from "axios";
 
 describe("UsersController", () => {
   let app: Express;
@@ -36,12 +37,12 @@ describe("UsersController", () => {
   });
 
   describe("POST /users", () => {
-    const createUserDto: CreateUserDto = { email: "user@test.com", password: "password" };
+    const createUserDto: CreateUserDto = { email: "user@test.com", password: "password", address: "famagusta, cyprus" };
 
     it("should create new user", async () => {
-      const res = await agent.post("/api/users").send(createUserDto);
+      const res = await agent.post("/api/v1/users").send(createUserDto);
 
-      expect(res.statusCode).toBe(201);
+      expect(res.statusCode).toBe(HttpStatusCode.Created);
       expect(res.body).toMatchObject({
         id: expect.any(String),
         email: expect.stringContaining(createUserDto.email) as string,
@@ -53,9 +54,9 @@ describe("UsersController", () => {
     it("should throw UnprocessableEntityError if user already exists", async () => {
       await usersService.createUser(createUserDto);
 
-      const res = await agent.post("/api/users").send(createUserDto);
+      const res = await agent.post("/api/v1/users").send(createUserDto);
 
-      expect(res.statusCode).toBe(422);
+      expect(res.statusCode).toBe(HttpStatusCode.UnprocessableEntity);
       expect(res.body).toMatchObject({
         name: "UnprocessableEntityError",
         message: "A user for the email already exists",
