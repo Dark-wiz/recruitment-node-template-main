@@ -13,7 +13,7 @@ env:
   DB_NAME: postgres
   SALT_ROUNDS: 10
   JWT_SECRET: secret
-  JWT_EXPIRES_AT: 10
+  JWT_EXPIRES_AT: 1h
 
 jobs:
   build:

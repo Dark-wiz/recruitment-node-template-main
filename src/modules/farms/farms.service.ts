@@ -6,6 +6,8 @@ import { ConflictError, NotFoundError } from "errors/errors";
 import { UsersService } from "modules/users/users.service";
 import { distanceCalculator } from "helpers/utils";
 import { LocationResponse } from "middlewares/dto/location-response.dto";
+import { SortedFarm } from "./dto/sorted-farm.dto";
+import { FilteredFarm } from "./dto/filtered-farm.dto";
 
 export class FarmService {
   private readonly farmRepository: Repository<Farm>;
@@ -25,12 +27,12 @@ export class FarmService {
 
     const existingFarm = await this.findOneBy({ name: name });
 
-    if (existingFarm) throw new ConflictError(`Farm with name ${name} already exists`);
+    if (existingFarm) throw new ConflictError("Farm with similar name already exists");
 
     const locationResponse: LocationResponse = await distanceCalculator(user.address, address);
 
     const distance_coordinate = locationResponse.distance;
-    const duration_coordinate = locationResponse.duration; 
+    const duration_coordinate = locationResponse.duration;
 
     const farmData: DeepPartial<Farm> = { user, name, address, size, farm_yield, distance_coordinate, duration_coordinate };
 
@@ -42,38 +44,26 @@ export class FarmService {
     return this.farmRepository.findOneBy({ ...param });
   }
 
-  public async getFarm(
-    userId: string,
-    page: string,
-    pageSize: string,
-    sortByName: string,
-    sortByDate: string,
-    sortByDistance: string,
-  ) {
+  public async getFarm(sortedFarm: SortedFarm) {
+    const userId = sortedFarm.userId;
     const result = await this.farmRepository
       .createQueryBuilder("farm")
       .leftJoin("farm.user", "user")
       .addSelect("user.email")
       .where("farm.userId = :userId", { userId })
-      .orderBy("farm.name", sortByName === "asc" ? "ASC" : "DESC")
-      .addOrderBy("farm.createdAt", sortByDate === "asc" ? "ASC" : "DESC")
-      .addOrderBy("farm.distance_coordinate", sortByDistance === "asc" ? "ASC" : "DESC")
-      .skip(parseInt(page))
-      .take(parseInt(pageSize))
+      .orderBy("farm.name", sortedFarm.sortByName === "asc" ? "ASC" : "DESC")
+      .addOrderBy("farm.createdAt", sortedFarm.sortByDate === "asc" ? "ASC" : "DESC")
+      .addOrderBy("farm.distance_coordinate", sortedFarm.sortByDistance === "asc" ? "ASC" : "DESC")
+      .skip(parseInt(sortedFarm.page))
+      .take(parseInt(sortedFarm.pageSize))
       .getMany();
     return result;
   }
 
-  public async filterFarm(
-    userId: string,
-    page: string,
-    pageSize: string,
-    outliers: string,
-    sortByName: string,
-    sortByDate: string,
-    sortByDistance: string,
+  public async filterFarm(filteredFarm: FilteredFarm
   ) {
-    const outlierValue = Boolean(outliers);
+    const userId = filteredFarm.userId;
+    const outlierValue = Boolean(filteredFarm.outliers);
     const result = await this.farmRepository
       .createQueryBuilder("farm")
       .leftJoin("farm.user", "user")
@@ -83,11 +73,11 @@ export class FarmService {
         `farm.farm_yield BETWEEN ( SELECT AVG(farm_yield) - AVG(farm_yield) * 0.3 FROM farm ) AND ( SELECT AVG(farm_yield) + AVG(farm_yield) * 0.3 FROM farm )`,
         { outlierValue },
       )
-      .orderBy("farm.name", sortByName === "asc" ? "ASC" : "DESC")
-      .addOrderBy("farm.createdAt", sortByDate === "asc" ? "ASC" : "DESC")
-      .addOrderBy("farm.distance_coordinate", sortByDistance === "asc" ? "ASC" : "DESC")
-      .skip(parseInt(page))
-      .take(parseInt(pageSize))
+      .orderBy("farm.name", filteredFarm.sortByName === "asc" ? "ASC" : "DESC")
+      .addOrderBy("farm.createdAt", filteredFarm.sortByDate === "asc" ? "ASC" : "DESC")
+      .addOrderBy("farm.distance_coordinate", filteredFarm.sortByDistance === "asc" ? "ASC" : "DESC")
+      .skip(parseInt(filteredFarm.page))
+      .take(parseInt(filteredFarm.pageSize))
       .getMany();
     return result;
   }

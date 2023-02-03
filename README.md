@@ -104,6 +104,9 @@ _Add API that supports following requirements:_
 
 - Add seed that will create 4 users and 30 farms each.
 
+- Link to postman collection
+    - https://api.postman.com/collections/3880519-25f483d6-0280-44ac-9d90-74b533355ca0?access_key=PMAT-01GRBPYZ6N9Y8WYMANAVXASKHQ
+
 <br/>
 <br/>
 <br/>

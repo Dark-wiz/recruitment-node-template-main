@@ -2,6 +2,8 @@ import { HttpStatusCode } from "axios";
 import { NextFunction, Request, Response } from "express";
 import { CreateFarmDto } from "./dto/create-farm.dto";
 import { FarmDto } from "./dto/farm.dto";
+import { FilteredFarm } from "./dto/filtered-farm.dto";
+import { SortedFarm } from "./dto/sorted-farm.dto";
 import { FarmService } from "./farms.service";
 
 export class FarmController {
@@ -23,38 +25,39 @@ export class FarmController {
   public async getFarm(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId, page, pageSize, sortByName, sortByDate, sortByDistance } = req.query;
-      const farms = await this.farmService.getFarm(
-        userId as string,
-        page as string,
-        pageSize as string,
-        sortByName as string,
-        sortByDate as string,
-        sortByDistance as string,
-      );
+      const sortFarm: SortedFarm = {
+        userId: userId as string,
+        page: page as string,
+        pageSize: pageSize as string,
+        sortByName: sortByName as string,
+        sortByDate: sortByDate as string,
+        sortByDistance: sortByDistance as string,
+      };
+      const farms = await this.farmService.getFarm(sortFarm);
       res.status(HttpStatusCode.Ok).send(farms);
     } catch (error) {
       next(error);
     }
   }
-  
+
   public async filterFarm(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, page, pageSize,outliers, sortByName, sortByDate, sortByDistance } = req.query;
-      const farms = await this.farmService.filterFarm(
-        userId as string,
-        page as string,
-        pageSize as string,
-        outliers as string,
-        sortByName as string,
-        sortByDate as string,
-        sortByDistance as string,
-      );
+      const { userId, page, pageSize, outliers, sortByName, sortByDate, sortByDistance } = req.query;
+      const filteredFarm: FilteredFarm = {
+        userId: userId as string,
+        page: page as string,
+        pageSize: pageSize as string,
+        sortByName: sortByName as string,
+        sortByDate: sortByDate as string,
+        sortByDistance: sortByDistance as string,
+        outliers: outliers as string,
+      };
+      const farms = await this.farmService.filterFarm(filteredFarm);
       res.status(HttpStatusCode.Ok).send(farms);
     } catch (error) {
       next(error);
     }
   }
-  
 
   public async deleteFarm(req: Request, res: Response, next: NextFunction) {
     try {

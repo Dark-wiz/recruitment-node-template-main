@@ -36,8 +36,8 @@ describe("UsersController", () => {
     await disconnectAndClearDatabase(ds);
   });
 
-  describe("POST /users", () => {
-    const createUserDto: CreateUserDto = { email: "user@test.com", password: "password", address: "famagusta, cyprus" };
+  describe("POST v1/users", () => {
+    const createUserDto: CreateUserDto = { email: "user_main@test.com", password: "password", address: "famagusta, cyprus" };
 
     it("should create new user", async () => {
       const res = await agent.post("/api/v1/users").send(createUserDto);

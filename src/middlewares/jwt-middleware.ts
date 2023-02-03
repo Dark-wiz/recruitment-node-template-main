@@ -14,7 +14,7 @@ export class JwtMiddleware {
 
   public async verifyToken(req: Request, res: Response, next: NextFunction) {
     try {
-      const token = req.body.token || req.query.token || req.headers["token"];
+    const token = req.body.token || req.query.token || req.headers["token"];
     const tokenUserId = req.body.userId || req.query.userId || req.headers["userId"];
     const tokenUserEmail = req.body.userEmail || req.query.userEmail || req.headers["userEmail"];
     if (!token) {

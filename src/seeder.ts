@@ -53,7 +53,7 @@ export class Seeder {
     if (users.length !== 0 || farms.length !== 0) return;
 
     const createUserPromises = [];
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 2; i++) {
       const createUserDto: CreateUserDto = {
         email: `user${i}@test.com`,
         password: "password",
@@ -65,7 +65,7 @@ export class Seeder {
     const createdUsers = await Promise.all(createUserPromises);
 
     for (const user of createdUsers) {
-      for (let j = 1; j <= 30; j++) {
+      for (let j = 1; j <= 2; j++) {
         this.seedFarm(`${user.email.split("@")[0]} - farm ${j}`, user.email);
       }
     }

@@ -38,7 +38,7 @@ describe("AuthController", () => {
     await disconnectAndClearDatabase(ds);
   });
 
-  describe("POST /auth", () => {
+  describe("POST v1/auth", () => {
     const createUser = async (userDto: CreateUserDto) => usersService.createUser(userDto);
     const loginDto: LoginUserDto = { email: "user@test.com", password: "password" };
     const createUserDto: CreateUserDto = { email: "user@test.com", password: "password", address: "famagusta, cyprus" };
