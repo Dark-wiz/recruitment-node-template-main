@@ -107,6 +107,8 @@ _Add API that supports following requirements:_
 - Link to postman collection
     - https://api.postman.com/collections/3880519-25f483d6-0280-44ac-9d90-74b533355ca0?access_key=PMAT-01GRBPYZ6N9Y8WYMANAVXASKHQ
 
+- Database is automatically seeded when app runs  
+
 <br/>
 <br/>
 <br/>
